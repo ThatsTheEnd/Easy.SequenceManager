@@ -1,0 +1,183 @@
+{
+  "SequenceManager": {
+    "FileVersion": "0.1.0",
+    "CheckSum": "cc9d1910bb6e9e878a322eb4add25093",
+    "Sequence": [
+      {
+        "Step": {
+          "Name": "Fill GBs With FB Hydrogel",
+          "Sychronous": "true",
+          "Documentation": "Any documentation needed",
+          "Timeout": "30",
+          "TargetModule": "",
+          "Parameters": {
+            "Parameter": [
+              {
+                "Name": "pumpSpeed",
+                "Type": "Integer",
+                "Value": "500",
+                "Required": "true",
+                "DefaultValue": "300",
+                "HooverOverInfo": "Pump speed in RPM"
+              },
+              {
+                "Name": "pumpMode",
+                "Type": "String",
+                "Value": "Auto",
+                "Required": "False",
+                "DefaultValue": "Manual",
+                "HooverOverInfo": "Pump operation mode"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "Step": {
+          "Name": "Hydrogel Compression",
+          "Sychronous": "true",
+          "Documentation": "Any documentation needed",
+          "Timeout": "45",
+          "TargetModule": "",
+          "Parameters": {
+            "Parameter": [
+              {
+                "Name": "axisTargetPosition1",
+                "Type": "Float",
+                "Value": "10.5",
+                "Required": "true",
+                "DefaultValue": "0.0",
+                "HooverOverInfo": "Target position for the axis movement"
+              },
+              {
+                "Name": "axisSpeed1",
+                "Type": "Float",
+                "Value": "10.5",
+                "Required": "true",
+                "DefaultValue": "0.0",
+                "HooverOverInfo": "Target position for the axis movement"
+              },
+              {
+                "Name": "axisTargetPosition2",
+                "Type": "Float",
+                "Value": "10.5",
+                "Required": "true",
+                "DefaultValue": "0.0",
+                "HooverOverInfo": "Target position for the axis movement"
+              },
+              {
+                "Name": "axisSpeed2",
+                "Type": "Float",
+                "Value": "10.5",
+                "Required": "true",
+                "DefaultValue": "0.0",
+                "HooverOverInfo": "Target position for the axis movement"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "Step": {
+          "Name": "Incubate",
+          "Sychronous": "true",
+          "Documentation": "Any documentation needed",
+          "Timeout": "45",
+          "TargetModule": "",
+          "Parameters": {
+            "Parameter": [
+              {
+                "Name": "timeTarget",
+                "Type": "Float",
+                "Value": "60000",
+                "Required": "true",
+                "DefaultValue": "0.0",
+                "HooverOverInfo": "Incubation Time before next step"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "Step": {
+          "Name": "Exchange Media",
+          "Sychronous": "true",
+          "Documentation": "Any documentation needed",
+          "Timeout": "45",
+          "TargetModule": "",
+          "Parameters": {
+            "Parameter": [
+              {
+                "Name": "amountFbBuffer",
+                "Type": "Float",
+                "Value": "10.5",
+                "Required": "true",
+                "DefaultValue": "0.0",
+                "HooverOverInfo": "Amount of FB buffer"
+              },
+              {
+                "Name": "amountKcBuffer",
+                "Type": "Float",
+                "Value": "10.5",
+                "Required": "true",
+                "DefaultValue": "0.0",
+                "HooverOverInfo": "Amount of KC Buffer"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "Step": {
+
+          "Name": "Incubate",
+          "Sychronous": "true",
+          "Documentation": "Any documentation needed",
+          "Timeout": "45",
+          "TargetModule": "",
+          "Parameters": {
+            "Parameter": [
+              {
+                "Name": "timeTarget",
+                "Type": "Float",
+                "Value": "60000",
+                "Required": "true",
+                "DefaultValue": "0.0",
+                "HooverOverInfo": "Incubation Time before next step"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "Step": {
+          "Name": "In-process Control 1",
+          "Sychronous": "true",
+          "Documentation": "Any documentation needed",
+          "Timeout": "45",
+          "TargetModule": "",
+          "Parameters": {
+            "Parameter": [
+              {
+                "Name": "takeImageFromAllGbs",
+                "Type": "Bool",
+                "Value": "true",
+                "Required": "true",
+                "DefaultValue": "0.0",
+                "HooverOverInfo": "Specifies whether to iage all GBs"
+              },
+              {
+                "Name": "cameraIntegrationTime",
+                "Type": "Float",
+                "Value": "10.5",
+                "Required": "true",
+                "DefaultValue": "1.0",
+                "HooverOverInfo": "Integration Time for Cameras"
+              }
+            ]
+          }
+        }
+      }
+    ]
+  }
+}
