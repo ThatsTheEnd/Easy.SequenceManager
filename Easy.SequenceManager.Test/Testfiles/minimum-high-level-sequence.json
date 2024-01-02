@@ -4,10 +4,11 @@
     "CheckSum": "cc9d1910bb6e9e878a322eb4add25093",
     "Sequence":
       {
-        "Steps": [
+        "Elements": [
           {
+            "Type": "Step",
             "Name": "Fill GBs With FB Hydrogel",
-            "IsSychronous": true,
+            "IsSynchronous": true,
             "Documentation": "Any documentation needed",
             "Timeout": 30,
             "TargetModule": "",
@@ -31,8 +32,9 @@
             ]
           },
           {
+            "Type": "Step",
             "Name": "Hydrogel Compression",
-            "IsSychronous": true,
+            "IsSynchronous": true,
             "Documentation": "Any documentation needed",
             "Timeout": 45,
             "TargetModule": "",

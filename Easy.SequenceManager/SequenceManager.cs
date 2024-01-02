@@ -6,6 +6,13 @@ using System.IO;
 
 namespace Easy.SequenceManager
 {
+    /// <summary>
+    /// Loads a sequence from a JSON file.
+    /// </summary>
+    /// <param name="filePath">The path to the JSON file.</param>
+    /// <exception cref="FileNotFoundException">Thrown when the specified file does not exist.</exception>
+    /// <exception cref="JsonReaderException">Thrown when the file is not in a valid JSON format.</exception>
+    /// <exception cref="InvalidOperationException">Thrown when required JSON properties are missing.</exception>
     public class SequenceManager
     {
         public string FileVersion { get; set; }
@@ -13,44 +20,56 @@ namespace Easy.SequenceManager
         public Sequence Sequence { get; set; }
 
         /// <summary>
-        /// Loads a sequence from a JSON file.
+        /// Loads a sequence from a JSON file and initializes the sequence elements.
         /// </summary>
         /// <param name="filePath">The path to the JSON file.</param>
-        /// <exception cref="FileNotFoundException">Thrown when the specified file does not exist.</exception>
-        /// <exception cref="JsonReaderException">Thrown when the file is not in a valid JSON format.</exception>
-        /// <exception cref="InvalidOperationException">Thrown when required JSON properties are missing.</exception>
         public void LoadJSON(string filePath)
         {
-            if (!File.Exists(filePath))
-            {
-                throw new FileNotFoundException($"The file {filePath} does not exist.");
-            }
+            string jsonText = File.ReadAllText(filePath);
+            JObject jObject = JObject.Parse(jsonText);
 
-            try
-            {
-                string jsonText = File.ReadAllText(filePath);
-                JObject jObject = JObject.Parse(jsonText);
+            JToken sequenceManagerToken = jObject["SequenceManager"];
+            FileVersion = (string)sequenceManagerToken["FileVersion"];
+            CheckSum = (string)sequenceManagerToken["CheckSum"];
 
-                JToken sequenceManagerToken = jObject["SequenceManager"] ?? throw new InvalidOperationException("Missing 'SequenceManager' section in JSON.");
-                FileVersion = (string)sequenceManagerToken["FileVersion"] ?? throw new InvalidOperationException("Missing 'FileVersion' property.");
-                CheckSum = (string)sequenceManagerToken["CheckSum"] ?? throw new InvalidOperationException("Missing 'CheckSum' property.");
-                Sequence = sequenceManagerToken["Sequence"].ToObject<Sequence>() ?? throw new InvalidOperationException("Missing 'Sequence' property.");
-            }
-            catch (JsonReaderException ex)
+            Sequence = new Sequence();
+            JArray elementsArray = (JArray)sequenceManagerToken["Sequence"]["Elements"];
+            foreach (var element in elementsArray)
             {
-                throw new JsonReaderException("Invalid JSON format.", ex);
+                string type = (string)element["Type"];
+                switch (type)
+                {
+                    case "Step":
+                        Sequence.Elements.Add(element.ToObject<Step>());
+                        break;
+                    case "SubSequence":
+                        SubSequence subSequence = element.ToObject<SubSequence>();
+                        if (!string.IsNullOrWhiteSpace(subSequence.SubSequenceFilePath))
+                        {
+                            SequenceManager subSequenceManager = new SequenceManager();
+                            subSequenceManager.LoadJSON(subSequence.SubSequenceFilePath);
+                            subSequence.Sequence = subSequenceManager.Sequence;
+                        }
+                        Sequence.Elements.Add(subSequence);
+                        break;
+                        // Add cases for other types of sequence elements here.
+                }
             }
         }
     }
 
+        // ... Other classes: Sequence, SequenceElement, Step, SubSequence, Parameter ...
+
+
+
     public class Sequence
     {
         private int CurrentExecutingStepIndex = 0;
-        public List<Step> Steps { get; set; }
+        public List<SequenceElement> Elements { get; set; }
 
         public Sequence()
         {
-            Steps = new List<Step>();
+            Elements = new List<SequenceElement>();
         }
 
         /// <summary>
@@ -58,14 +77,14 @@ namespace Easy.SequenceManager
         /// Increments the CurrentExecutingStepIndex
         /// </summary>
         /// <returns>Step or Null</returns>
-        public Step GetNextStepToExecute()
+        public SequenceElement GetNextElementToExecute()
         {             
-            if (CurrentExecutingStepIndex < Steps.Count)
+            if (CurrentExecutingStepIndex < Elements.Count)
             {
-                Step step = Steps[CurrentExecutingStepIndex];
+                SequenceElement currentElement = Elements[CurrentExecutingStepIndex];
                 CurrentExecutingStepIndex++;
                 // return the current step to execute
-                return step;
+                return currentElement;
             }
             else
             {
@@ -74,12 +93,18 @@ namespace Easy.SequenceManager
         }
     }
 
-
-    public class Step
+    public abstract class SequenceElement
     {
         public string Name { get; set; }
-        public bool IsSychronous { get; set; }
+        public bool IsSynchronous { get; set; }
         public string Documentation { get; set; }
+
+        // Common methods or properties for all sequence elements
+    }
+
+
+    public class Step : SequenceElement
+    {
         public int Timeout { get; set; }
         public string TargetModule { get; set; }
         [JsonProperty("Parameters")]
@@ -90,6 +115,15 @@ namespace Easy.SequenceManager
             Parameters = new List<Parameter>();
         }
     }
+
+    public class SubSequence : SequenceElement
+    {
+        public string SubSequenceFilePath { get; set; }
+        public Sequence Sequence { get; set; }
+
+        // Load sub-sequence or reference another JSON
+    }
+
 
     public class Parameter
     {
@@ -102,3 +136,4 @@ namespace Easy.SequenceManager
     }
 
 }
+
