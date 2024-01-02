@@ -17,6 +17,7 @@ namespace Easy.SequenceManager
     {
         public string FileVersion { get; set; }
         public string CheckSum { get; set; }
+        public string BaseDirectory { get; private set; }
         public Sequence Sequence { get; set; }
 
         /// <summary>
@@ -25,6 +26,7 @@ namespace Easy.SequenceManager
         /// <param name="filePath">The path to the JSON file.</param>
         public void LoadJSON(string filePath)
         {
+            BaseDirectory = Path.GetDirectoryName(filePath);
             string jsonText = File.ReadAllText(filePath);
             JObject jObject = JObject.Parse(jsonText);
 
@@ -47,7 +49,7 @@ namespace Easy.SequenceManager
                         if (!string.IsNullOrWhiteSpace(subSequence.SubSequenceFilePath))
                         {
                             SequenceManager subSequenceManager = new SequenceManager();
-                            subSequenceManager.LoadJSON(subSequence.SubSequenceFilePath);
+                            subSequenceManager.LoadJSON(Path.Combine(BaseDirectory, subSequence.SubSequenceFilePath));
                             subSequence.Sequence = subSequenceManager.Sequence;
                         }
                         Sequence.Elements.Add(subSequence);
@@ -58,7 +60,6 @@ namespace Easy.SequenceManager
         }
     }
 
-        // ... Other classes: Sequence, SequenceElement, Step, SubSequence, Parameter ...
 
 
 
@@ -78,7 +79,7 @@ namespace Easy.SequenceManager
         /// </summary>
         /// <returns>Step or Null</returns>
         public SequenceElement GetNextElementToExecute()
-        {             
+        {
             if (CurrentExecutingStepIndex < Elements.Count)
             {
                 SequenceElement currentElement = Elements[CurrentExecutingStepIndex];

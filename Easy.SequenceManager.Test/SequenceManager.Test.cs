@@ -102,7 +102,49 @@ namespace Easy.SequenceManager
                 // Handle the case if the first element is not a Step
                 throw new System.Exception("First element is not a Step");
             }
+        }
+        
+        [Fact]
+        public void AssertMainAndSubSequenceElements()
+        {
+            // Arrange
+            var sequenceManager = new SequenceManager();
+            string mainSequenceFilePath = Path.Combine("Testfiles", "sequence_with_subsequence.json");
 
+            // Act
+            sequenceManager.LoadJSON(mainSequenceFilePath);
+
+            // Assert Main Sequence
+            Assert.Equal("1.0.0", sequenceManager.FileVersion); // Example version
+            Assert.Equal("mainsequencechecksum", sequenceManager.CheckSum); // Example checksum
+
+            var mainSequence = sequenceManager.Sequence;
+            Assert.NotNull(mainSequence);
+
+            // Assert Sub-Sequence
+            var subSequenceStep = mainSequence.Elements.OfType<SubSequence>().FirstOrDefault();
+            Assert.NotNull(subSequenceStep);
+
+            // Load and assert the sub-sequence
+            string subSequenceFilePath = Path.Combine("Testfiles", "Subsequences", "My-Subsequence.json");
+            var subSequenceManager = new SequenceManager();
+            subSequenceManager.LoadJSON(subSequenceFilePath);
+
+            var subSequence = subSequenceManager.Sequence;
+            Assert.NotNull(subSequence);
+
+            // Example assertions for the sub-sequence step
+            var subSequenceElement = subSequence.Elements.FirstOrDefault();
+            Assert.NotNull(subSequenceElement);
+            Assert.Equal("Data Analysis", subSequenceElement.Name);
+            Assert.False(subSequenceElement.IsSynchronous);
+            Assert.Equal("Calibrating sensors for accurate readings", subSequenceElement.Documentation);
+
+            // Assert Normal Step in Main Sequence
+            var normalStep = mainSequence.Elements.OfType<Step>().FirstOrDefault();
+            Assert.NotNull(normalStep);
+            Assert.Equal("Final Step", normalStep.Name); // Example name for normal step
+                                                         // Add more assertions for the normal step
         }
     }
 }

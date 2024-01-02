@@ -1,0 +1,27 @@
+{
+  "SequenceManager": {
+    "FileVersion": "1.0.0",
+    "CheckSum": "examplechecksum456",
+    "Sequence": {
+      "Elements": [
+        {
+          "Name": "Data Analysis",
+          "IsSynchronous": false,
+          "Documentation": "Calibrating sensors for accurate readings",
+          "Timeout": 119,
+          "TargetModule": "ModuleD",
+          "Parameters": [
+            {
+              "Name": "param4",
+              "Type": "Float",
+              "Value": "9",
+              "Required": true,
+              "DefaultValue": "19",
+              "HooverOverInfo": "Info about data analysis parameter"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
