@@ -260,5 +260,38 @@ namespace Easy.SequenceManager
             // Assert that the whole sequence has 4 steps (including subsequence steps)
             Assert.Equal(4, stepCount);
         }
+
+        [Fact]
+        public void TestMainSequenceWithNestedSubSequences()
+        {
+            var sequenceManager = new SequenceManager();
+            sequenceManager.LoadJsonSequence(Path.Combine("Testfiles", "main.json"));
+
+            // First step of the main sequence
+            var firstGroup = sequenceManager.Sequence.GetNextElementsToExecute();
+            Assert.Single(firstGroup);
+            Assert.Equal("Main Step 1", firstGroup.First().Name);
+
+            // Entire sub-sequence (sub.json)
+            var secondGroup = sequenceManager.Sequence.GetNextElementsToExecute();
+            Assert.Single(secondGroup);
+            Assert.Equal("Sub Step 1", secondGroup.First().Name);
+
+            // All steps of the sub-sub-sequence (sub-sub.json) executed in parallel
+            var thirdGroup = sequenceManager.Sequence.GetNextElementsToExecute();
+            Assert.Equal(3, thirdGroup.Count);
+            Assert.Contains(thirdGroup, step => step.Name == "Sub-Sub Step 1");
+            Assert.Contains(thirdGroup, step => step.Name == "Sub-Sub Step 2");
+            Assert.Contains(thirdGroup, step => step.Name == "Sub-Sub Step 3");
+
+            // Third step of the sub-sequence (sub.json)
+            var fourthGroup = sequenceManager.Sequence.GetNextElementsToExecute();
+            Assert.Single(fourthGroup);
+            Assert.Equal("Sub Step 3", fourthGroup.First().Name);
+
+            // Third step of the main sequence
+            var fifthGroup = sequenceManager.Sequence.GetNextElementsToExecute();
+
+        }
     }
     }

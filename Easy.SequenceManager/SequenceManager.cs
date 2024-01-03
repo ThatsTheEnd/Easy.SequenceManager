@@ -53,10 +53,10 @@ namespace Easy.SequenceManager
                     break;
                 case "SubSequence":
                     SubSequence subSequence = element.ToObject<SubSequence>();
-                    subSequence.LoadSubSequence(BaseDirectory); // Load the sub-sequence
+                    subSequence.Initialize(BaseDirectory); // Initialize the sub-sequence, which recursively loads any nested sequences
                     Sequence.Elements.Add(subSequence);
                     break;
-            }
+                }
         }
     }
 }
