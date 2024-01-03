@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+
 namespace Easy.SequenceManager
 {
     /// <summary>
@@ -232,10 +234,28 @@ namespace Easy.SequenceManager
 
     public class SubSequence : SequenceElement
     {
+        // Path to the sub-sequence JSON file
         public string SubSequenceFilePath { get; set; }
         public Sequence Sequence { get; set; }
-        public int CurrentStepIndex = 0;  // Internal index for sub-sequence
+        public int CurrentStepIndex = 0;
 
+        /// <summary>
+        /// Loads the sub-sequence from its JSON file.
+        /// </summary>
+        /// <param name="baseDirectory">Base directory for relative paths.</param>
+        public void LoadSubSequence(string baseDirectory)
+        {
+            if (!string.IsNullOrWhiteSpace(SubSequenceFilePath))
+            {
+                string fullPath = Path.Combine(baseDirectory, SubSequenceFilePath);
+                if (!File.Exists(fullPath))
+                    throw new FileNotFoundException($"Sub-sequence file '{fullPath}' does not exist.");
+
+                SequenceManager subSequenceManager = new SequenceManager();
+                subSequenceManager.LoadJsonSequence(fullPath); // Load the nested sequence
+                Sequence = subSequenceManager.Sequence;
+            }
+        }
         public override List<SequenceElement> GetNextElements(ExecutionContext context)
         {
             List<SequenceElement> nextElements = new List<SequenceElement>();
