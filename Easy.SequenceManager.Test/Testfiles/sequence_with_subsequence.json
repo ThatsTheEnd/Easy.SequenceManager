@@ -15,6 +15,7 @@
           "Type": "Step",
           "Name": "Final Step",
           "IsSynchronous": true,
+          "IsParallel": true,
           "Documentation": "Final step documentation",
           "Timeout": 60,
           "TargetModule": "Module3",

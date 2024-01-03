@@ -4,41 +4,12 @@
     "CheckSum": "cc9d1910bb6e9e878a322eb4add25093",
     "Sequence": {
       "Elements": [
-        {
-          "Type": "Step",
-          "Name": "Fill GBs With FB Hydrogel",
-          "IsSynchronous": true,
-          "IsParallel": false,
-          "Documentation": "Any documentation needed",
-          "Timeout": 30,
-          "TargetModule": "",
+        {"Type": "Step", "Name": "Fill GBs With FB Hydrogel", "IsSynchronous": true, "IsParallel": false, "Documentation": "Any documentation needed", "Timeout": 30, "TargetModule": "",
           "Parameters": [
-            {
-              "Name": "pumpSpeed",
-              "Type": "Integer",
-              "Value": "500",
-              "Required": true,
-              "DefaultValue": "300",
-              "HooverOverInfo": "Pump speed in RPM"
-            },
-            {
-              "Name": "pumpMode",
-              "Type": "String",
-              "Value": "Auto",
-              "Required": false,
-              "DefaultValue": "Manual",
-              "HooverOverInfo": "Pump operation mode"
-            }
-          ]
-        },
-        {
-          "Type": "Step",
-          "Name": "Hydrogel Compression",
-          "IsSynchronous": true,
-          "IsParallel": true,
-          "Documentation": "Any documentation needed",
-          "Timeout": 45,
-          "TargetModule": "",
+            {"Name": "pumpSpeed", "Type": "Integer", "Value": "500", "Required": true, "DefaultValue": "300", "HooverOverInfo": "Pump speed in RPM" },
+            {"Name": "pumpMode", "Type": "String", "Value": "Auto", "Required": false, "DefaultValue": "Manual", "HooverOverInfo": "Pump operation mode" }
+          ] },
+        {"Type": "Step", "Name": "Hydrogel Compression", "IsSynchronous": true, "IsParallel": true, "Documentation": "Any documentation needed", "Timeout": 45, "TargetModule": "",
           "Parameters": [
             {
               "Name": "axisTargetPosition1",
@@ -72,16 +43,8 @@
               "DefaultValue": "0.0",
               "HooverOverInfo": "Target position for the axis movement"
             }
-          ]
-        },
-        {
-          "Type": "Step",
-          "Name": "Incubate",
-          "IsSynchronous": true,
-          "IsParallel": true,
-          "Documentation": "Any documentation needed",
-          "Timeout": 45,
-          "TargetModule": "",
+          ] },
+        {"Type": "Step", "Name": "Incubate", "IsSynchronous": true, "IsParallel": true, "Documentation": "Any documentation needed", "Timeout": 45, "TargetModule": "",
           "Parameters": [
             {
               "Name": "timeTarget",
@@ -91,16 +54,8 @@
               "DefaultValue": "0.0",
               "HooverOverInfo": "Incubation Time before next step"
             }
-          ]
-        },
-        {
-          "Type": "Step",
-          "Name": "Exchange Media",
-          "IsSynchronous": true,
-          "IsParallel": false,
-          "Documentation": "Any documentation needed",
-          "Timeout": 45,
-          "TargetModule": "",
+          ] },
+        {"Type": "Step", "Name": "Exchange Media", "IsSynchronous": true, "IsParallel": false, "Documentation": "Any documentation needed", "Timeout": 45, "TargetModule": "",
           "Parameters": [
             {
               "Name": "amountFbBuffer",
@@ -118,16 +73,8 @@
               "DefaultValue": "0.0",
               "HooverOverInfo": "Amount of KC Buffer"
             }
-          ]
-        },
-        {
-          "Type": "Step",
-          "Name": "Incubate",
-          "IsSynchronous": true,
-          "IsParallel": true,
-          "Documentation": "Any documentation needed",
-          "Timeout": 45,
-          "TargetModule": "",
+          ] },
+        {"Type": "Step", "Name": "Incubate", "IsSynchronous": true, "IsParallel": true, "Documentation": "Any documentation needed", "Timeout": 45, "TargetModule": "",
           "Parameters": [
             {
               "Name": "timeTarget",
@@ -137,16 +84,8 @@
               "DefaultValue": "0.0",
               "HooverOverInfo": "Incubation Time before next step"
             }
-          ]
-        },
-        {
-          "Type": "Step",
-          "Name": "In-process Control 1",
-          "IsSynchronous": true,
-          "IsParallel": true,
-          "Documentation": "Any documentation needed",
-          "Timeout": 45,
-          "TargetModule": "",
+          ] },
+        {"Type": "Step", "Name": "In-process Control 1", "IsSynchronous": true, "IsParallel": true, "Documentation": "Any documentation needed", "Timeout": 45, "TargetModule": "",
           "Parameters": [
             {
               "Name": "takeImageFromAllGbs",
@@ -164,8 +103,7 @@
               "DefaultValue": "1.0",
               "HooverOverInfo": "Integration Time for Cameras"
             }
-          ]
-        }
+          ] }
       ]
     }
   }

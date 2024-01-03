@@ -28,7 +28,7 @@ namespace Easy.SequenceManager
         /// <exception cref="FileNotFoundException">Thrown when the specified file does not exist.</exception>
         /// <exception cref="JsonException">Thrown when there is an error processing the JSON file.</exception>
         /// <exception cref="Exception">General exceptions for other errors.</exception>
-        public void LoadJSON(string filePath)
+        public void LoadJsonSequence(string filePath)
         {
             if (!File.Exists(filePath))
             {
@@ -64,7 +64,7 @@ namespace Easy.SequenceManager
                                     throw new FileNotFoundException($"Sub-sequence file '{fullPath}' does not exist.");
 
                                 SequenceManager subSequenceManager = new SequenceManager();
-                                subSequenceManager.LoadJSON(fullPath);
+                                subSequenceManager.LoadJsonSequence(fullPath);
                                 subSequence.Sequence = subSequenceManager.Sequence;
                             }
                             Sequence.Elements.Add(subSequence);
@@ -135,7 +135,6 @@ namespace Easy.SequenceManager
         public bool IsParallel { get; set; }  // New property for parallel execution
         public string Documentation { get; set; }
 
-        // Common methods or properties for all sequence elements
         // Abstract method to get next elements
         public abstract List<SequenceElement> GetNextElements();
 
@@ -178,7 +177,9 @@ namespace Easy.SequenceManager
 
     }
 
-
+    /// <summary>
+    /// This is a dataclass to hold information about a parameter. It is used in the Step class within a list.
+    /// </summary>
     public class Parameter
     {
         public string Name { get; set; }

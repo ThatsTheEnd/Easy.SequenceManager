@@ -17,7 +17,8 @@
             {"Name": "axisTargetPosition1", "Type": "Float", "Value": "10.5", "Required": true, "DefaultValue": "0.0", "HooverOverInfo": "Target position for the axis movement" },
             {"Name": "axisSpeed1", "Type": "Float", "Value": "10.5", "Required": true, "DefaultValue": "0.0", "HooverOverInfo": "Target position for the axis movement" },
             {"Name": "axisTargetPosition2", "Type": "Float", "Value": "10.5", "Required": true, "DefaultValue": "0.0", "HooverOverInfo": "Target position for the axis movement"},
-            {"Name": "axisSpeed2", "Type": "Float", "Value": "10.5", "Required": true, "DefaultValue": "0.0", "HooverOverInfo": "Target position for the axis movement"} ]
+            {"Name": "axisSpeed2", "Type": "Float", "Value": "10.5", "Required": true, "DefaultValue": "0.0", "HooverOverInfo": "Target position for the axis movement"} 
+          ]
         }
       ]
     }

@@ -15,7 +15,7 @@ namespace Easy.SequenceManager
             string filePath = Path.Combine("Testfiles", "minimum-high-level-sequence.json");
 
             // Act
-            sequenceManager.LoadJSON(filePath);
+            sequenceManager.LoadJsonSequence(filePath);
 
             // Assert
             Assert.Equal("0.1.0", sequenceManager.FileVersion);
@@ -74,7 +74,7 @@ namespace Easy.SequenceManager
             string filePath = Path.Combine("Testfiles", "minimum-high-level-sequence.json");
 
             // Act
-            sequenceManager.LoadJSON(filePath);
+            sequenceManager.LoadJsonSequence(filePath);
             var firstElement = sequenceManager.Sequence.GetNextElementsToExecute(); // Get the first step
             var secondElement = sequenceManager.Sequence.GetNextElementsToExecute()[0]; // Get the second step
 
@@ -113,7 +113,7 @@ namespace Easy.SequenceManager
             string filePath = Path.Combine("Testfiles", "high-level-sequence.json");
 
             // Act
-            sequenceManager.LoadJSON(filePath);
+            sequenceManager.LoadJsonSequence(filePath);
 
             // Get the first set of elements (step 1)
             var firstGroup = sequenceManager.Sequence.GetNextElementsToExecute();
@@ -139,6 +139,84 @@ namespace Easy.SequenceManager
             Assert.Contains(fourthGroup, step => step.Name == "In-process Control 1");
         }
 
+        [Fact]
+        public void AssertSubSequenceContents()
+        {
+            // Arrange
+            var sequenceManager = new SequenceManager();
+            string subSequenceFilePath = Path.Combine("Testfiles", "Subsequences", "My-Subsequence.json");
+
+            // Act
+            sequenceManager.LoadJsonSequence(subSequenceFilePath);
+
+            // Assert Sub-Sequence is loaded
+            Assert.NotNull(sequenceManager.Sequence);
+            Assert.NotEmpty(sequenceManager.Sequence.Elements);
+
+            // Verify the content of the sub-sequence
+            var subSequenceStep = sequenceManager.Sequence.Elements.FirstOrDefault() as Step;
+            Assert.NotNull(subSequenceStep);
+            Assert.Equal("Data Analysis", subSequenceStep.Name);
+            Assert.False(subSequenceStep.IsSynchronous);
+            Assert.Equal("Calibrating sensors for accurate readings", subSequenceStep.Documentation);
+            Assert.Equal(119, subSequenceStep.Timeout);
+            Assert.Equal("ModuleD", subSequenceStep.TargetModule);
+
+            // Verify Parameters of the sub-sequence step
+            Assert.NotEmpty(subSequenceStep.Parameters);
+            var parameter = subSequenceStep.Parameters.FirstOrDefault();
+            Assert.NotNull(parameter);
+            Assert.Equal("param4", parameter.Name);
+            Assert.Equal("Float", parameter.Type);
+            Assert.Equal("9", parameter.Value);
+            Assert.True(parameter.Required);
+            Assert.Equal("19", parameter.DefaultValue);
+            Assert.Equal("Info about data analysis parameter", parameter.HooverOverInfo);
+        }
+
+        [Fact]
+        public void AssertSubSequenceIsLoadedCorrectly()
+        {
+            // Arrange
+            var sequenceManager = new SequenceManager();
+            string mainSequenceFilePath = Path.Combine("Testfiles", "sequence_with_subsequence.json");
+
+            // Act
+            sequenceManager.LoadJsonSequence(mainSequenceFilePath);
+
+            // Assert
+            Assert.NotNull(sequenceManager.Sequence);
+            Assert.NotEmpty(sequenceManager.Sequence.Elements);
+
+            // Find the sub-sequence element
+            var subSequenceElement = sequenceManager.Sequence.Elements
+                                        .OfType<SubSequence>()
+                                        .FirstOrDefault();
+            Assert.NotNull(subSequenceElement);
+            Assert.Equal("Sub-Sequence Step", subSequenceElement.Name);
+            Assert.True(subSequenceElement.IsSynchronous);
+            Assert.Equal("This step refers to a sub-sequence", subSequenceElement.Documentation);
+            Assert.NotNull(subSequenceElement.Sequence);
+            Assert.NotEmpty(subSequenceElement.Sequence.Elements);
+
+            // Verify the content of the sub-sequence
+            var subSequenceStep = subSequenceElement.Sequence.Elements.FirstOrDefault();
+            Assert.NotNull(subSequenceStep);
+            Assert.Equal("Data Analysis", subSequenceStep.Name);
+            Assert.False(subSequenceStep.IsSynchronous);
+            Assert.Equal("Calibrating sensors for accurate readings", subSequenceStep.Documentation);
+            Assert.True(subSequenceStep is Step);
+
+            // If it's a Step, verify its parameters
+            var step = subSequenceStep as Step;
+            Assert.NotNull(step.Parameters);
+            var param = step.Parameters.FirstOrDefault();
+            Assert.NotNull(param);
+            Assert.Equal("param4", param.Name);
+            Assert.Equal("Float", param.Type);
+            Assert.Equal("9", param.Value);
+        }
+
         //[Fact]
         //public void AssertMainAndSubSequenceElements()
         //{
@@ -147,7 +225,7 @@ namespace Easy.SequenceManager
         //    string mainSequenceFilePath = Path.Combine("Testfiles", "sequence_with_subsequence.json");
 
         //    // Act
-        //    sequenceManager.LoadJSON(mainSequenceFilePath);
+        //    sequenceManager.LoadJsonSequence(mainSequenceFilePath);
 
         //    // Assert Main Sequence
         //    Assert.Equal("1.0.0", sequenceManager.FileVersion); // Example version
@@ -163,7 +241,7 @@ namespace Easy.SequenceManager
         //    // Load and assert the sub-sequence
         //    string subSequenceFilePath = Path.Combine("Testfiles", "Subsequences", "My-Subsequence.json");
         //    var subSequenceManager = new SequenceManager();
-        //    subSequenceManager.LoadJSON(subSequenceFilePath);
+        //    subSequenceManager.LoadJsonSequence(subSequenceFilePath);
 
         //    var subSequence = subSequenceManager.Sequence;
         //    Assert.NotNull(subSequence);
@@ -182,4 +260,4 @@ namespace Easy.SequenceManager
         //                                                 // Add more assertions for the normal step
         //}
     }
-}
+    }
