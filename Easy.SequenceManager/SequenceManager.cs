@@ -99,27 +99,57 @@ namespace Easy.SequenceManager
         /// <returns>List of SequenceElement or empty list if no more elements are available.</returns>
         public List<SequenceElement> GetNextElementsToExecute()
         {
-            if (CurrentExecutingStepIndex >= Elements.Count)
+            List<SequenceElement> elementsToExecute = new List<SequenceElement>();
+
+            while (CurrentExecutingStepIndex < Elements.Count)
             {
-                return new List<SequenceElement>();
+                SequenceElement currentElement = Elements[CurrentExecutingStepIndex];
+
+                if (currentElement is SubSequence subSequence)
+                {
+                    var subSequenceElements = HandleNextSubSequence(subSequence);
+                    if (subSequenceElements.Any())
+                    {
+                        return subSequenceElements;
+                    }
+                    else
+                    {
+                        // If sub-sequence is finished, increment index to move to the next element in the main sequence
+                        CurrentExecutingStepIndex++;
+                        continue;
+                    }
+                }
+
+                // Process step elements
+                if (currentElement is Step currentStep)
+                {
+                    elementsToExecute.Add(currentStep);
+                    CurrentExecutingStepIndex++;
+
+                    if (currentStep.IsParallel)
+                    {
+                        while (CurrentExecutingStepIndex < Elements.Count && Elements[CurrentExecutingStepIndex] is Step nextStep && nextStep.IsParallel)
+                        {
+                            elementsToExecute.Add(nextStep);
+                            CurrentExecutingStepIndex++;
+                        }
+                    }
+
+                    return elementsToExecute;
+                }
+                else
+                {
+                    // Increment index for non-step elements
+                    CurrentExecutingStepIndex++;
+                    elementsToExecute.Add(currentElement);
+                    return elementsToExecute;
+                }
             }
 
-            SequenceElement currentElement = Elements[CurrentExecutingStepIndex];
-
-            // Split the logic to handle either a Step or a SubSequence
-            if (currentElement is Step currentStep)
-            {
-                return HandleNextStep(currentStep);
-            }
-            else if (currentElement is SubSequence subSequence)
-            {
-                return HandleNextSubSequence(subSequence);
-            }
-
-            // If the element is neither a Step nor a SubSequence
-            CurrentExecutingStepIndex++;
-            return new List<SequenceElement> { currentElement };
+            return elementsToExecute;
         }
+
+
 
         /// <summary>
         /// Processes the next element when it is a Step. If the current step is parallel,
@@ -168,22 +198,41 @@ namespace Easy.SequenceManager
         /// or an empty list if the sub-sequence is completed.</returns>
         private List<SequenceElement> HandleNextSubSequence(SubSequence subSequence)
         {
-            if (subSequence.Sequence != null && subSequence.CurrentStepIndex < subSequence.Sequence.Elements.Count)
+            if (subSequence.Sequence != null)
             {
-                var nextElement = subSequence.Sequence.Elements[subSequence.CurrentStepIndex];
-
-                // Apply HandleNextStep logic to the sub-sequence
-                if (nextElement is Step step)
+                while (subSequence.CurrentStepIndex < subSequence.Sequence.Elements.Count)
                 {
-                    return HandleSubSequenceStep(subSequence, step);
-                }
+                    var nextElement = subSequence.Sequence.Elements[subSequence.CurrentStepIndex];
+                    List<SequenceElement> subSequenceElements = new List<SequenceElement> { nextElement };
+                    subSequence.CurrentStepIndex++;
 
-                // Move to the next element if the current element is not a Step
-                subSequence.CurrentStepIndex++;
+                    if (nextElement is Step step && step.IsParallel)
+                    {
+                        while (subSequence.CurrentStepIndex < subSequence.Sequence.Elements.Count)
+                        {
+                            if (subSequence.Sequence.Elements[subSequence.CurrentStepIndex] is Step nextStep && nextStep.IsParallel)
+                            {
+                                subSequenceElements.Add(nextStep);
+                                subSequence.CurrentStepIndex++;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                    }
+
+                    if (subSequenceElements.Any())
+                    {
+                        return subSequenceElements;
+                    }
+                }
             }
 
+            // Indicate that the sub-sequence is completed
             return new List<SequenceElement>();
         }
+
 
         private List<SequenceElement> HandleSubSequenceStep(SubSequence subSequence, Step step)
         {
