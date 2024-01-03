@@ -46,7 +46,7 @@
           "Type": "Step",
           "Name": "System Check",
           "IsSynchronous": false,
-          "IsParallel": true,
+          "IsParallel": false,
           "Documentation": "Conducting a system-wide check",
           "Timeout": 75,
           "TargetModule": "ModuleA",

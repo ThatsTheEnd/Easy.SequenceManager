@@ -99,28 +99,121 @@ namespace Easy.SequenceManager
         /// <returns>List of SequenceElement or empty list if no more elements are available.</returns>
         public List<SequenceElement> GetNextElementsToExecute()
         {
-            List<SequenceElement> elementsToExecute = new List<SequenceElement>();
-            if (CurrentExecutingStepIndex < Elements.Count)
+            if (CurrentExecutingStepIndex >= Elements.Count)
             {
-                SequenceElement currentElement = Elements[CurrentExecutingStepIndex];
-                elementsToExecute.Add(currentElement);
+                return new List<SequenceElement>();
+            }
+
+            SequenceElement currentElement = Elements[CurrentExecutingStepIndex];
+
+            // Split the logic to handle either a Step or a SubSequence
+            if (currentElement is Step currentStep)
+            {
+                return HandleNextStep(currentStep);
+            }
+            else if (currentElement is SubSequence subSequence)
+            {
+                return HandleNextSubSequence(subSequence);
+            }
+
+            // If the element is neither a Step nor a SubSequence
+            CurrentExecutingStepIndex++;
+            return new List<SequenceElement> { currentElement };
+        }
+
+        /// <summary>
+        /// Processes the next element when it is a Step. If the current step is parallel,
+        /// it aggregates subsequent parallel steps. If the current step is not parallel,
+        /// it returns only this step.
+        /// </summary>
+        /// <param name="currentStep">The current Step element to be processed.</param>
+        /// <returns>A list of SequenceElement, either containing just the current step,
+        /// or the current step along with subsequent parallel steps.</returns>
+        private List<SequenceElement> HandleNextStep(Step currentStep)
+        {
+            List<SequenceElement> elementsToExecute = new List<SequenceElement> { currentStep };
+
+            // Add subsequent parallel steps if the current step is parallel
+            if (currentStep.IsParallel)
+            {
                 CurrentExecutingStepIndex++;
-
-                // If the first element is not parallel, return it alone
-                if (!currentElement.IsParallel)
+                while (CurrentExecutingStepIndex < Elements.Count)
                 {
-                    return elementsToExecute;
+                    if (Elements[CurrentExecutingStepIndex] is Step nextStep && nextStep.IsParallel)
+                    {
+                        elementsToExecute.Add(nextStep);
+                        CurrentExecutingStepIndex++;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
-
-                // Otherwise, continue adding elements only if they are marked as parallel
-                while (CurrentExecutingStepIndex < Elements.Count && Elements[CurrentExecutingStepIndex].IsParallel)
-                {
-                    elementsToExecute.Add(Elements[CurrentExecutingStepIndex]);
-                    CurrentExecutingStepIndex++;
-                }
+            }
+            else
+            {
+                // Increment index for non-parallel step
+                CurrentExecutingStepIndex++;
             }
             return elementsToExecute;
         }
+
+        /// <summary>
+        /// Processes the next element when it is a SubSequence. It retrieves the next elements
+        /// from the sub-sequence. If the sub-sequence has more elements to execute, it returns them.
+        /// Once the sub-sequence is completed, it moves to the next element in the main sequence.
+        /// </summary>
+        /// <param name="subSequence">The SubSequence element to be processed.</param>
+        /// <returns>A list of SequenceElement containing the next elements from the sub-sequence,
+        /// or an empty list if the sub-sequence is completed.</returns>
+        private List<SequenceElement> HandleNextSubSequence(SubSequence subSequence)
+        {
+            if (subSequence.Sequence != null && subSequence.CurrentStepIndex < subSequence.Sequence.Elements.Count)
+            {
+                var nextElement = subSequence.Sequence.Elements[subSequence.CurrentStepIndex];
+
+                // Apply HandleNextStep logic to the sub-sequence
+                if (nextElement is Step step)
+                {
+                    return HandleSubSequenceStep(subSequence, step);
+                }
+
+                // Move to the next element if the current element is not a Step
+                subSequence.CurrentStepIndex++;
+            }
+
+            return new List<SequenceElement>();
+        }
+
+        private List<SequenceElement> HandleSubSequenceStep(SubSequence subSequence, Step step)
+        {
+            List<SequenceElement> elementsToExecute = new List<SequenceElement> { step };
+
+            if (step.IsParallel)
+            {
+                subSequence.CurrentStepIndex++;
+                while (subSequence.CurrentStepIndex < subSequence.Sequence.Elements.Count)
+                {
+                    if (subSequence.Sequence.Elements[subSequence.CurrentStepIndex] is Step nextStep && nextStep.IsParallel)
+                    {
+                        elementsToExecute.Add(nextStep);
+                        subSequence.CurrentStepIndex++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                subSequence.CurrentStepIndex++;
+            }
+            return elementsToExecute;
+        }
+
+
+
 
     }
 
@@ -129,12 +222,7 @@ namespace Easy.SequenceManager
     public abstract class SequenceElement
     {
         public string Name { get; set; }
-        // The property IsParallel on two neighbouring steps is used to indicate that the steps are kicked of in parallel.
-        // The property IsSynchronous is used to indicate that the step is synchronous, i.e. the orchestrator will wait for the step to finish before continuing.
-        public bool IsSynchronous { get; set; }
-        public bool IsParallel { get; set; }  // New property for parallel execution
         public string Documentation { get; set; }
-
         // Abstract method to get next elements
         public abstract List<SequenceElement> GetNextElements();
 
@@ -147,6 +235,10 @@ namespace Easy.SequenceManager
         public string TargetModule { get; set; }
         [JsonProperty("Parameters")]
         public List<Parameter> Parameters { get; set; }
+        // The property IsParallel on two neighbouring steps is used to indicate that the steps are kicked of in parallel.
+        // The property IsSynchronous is used to indicate that the step is synchronous, i.e. the orchestrator will wait for the step to finish before continuing.
+        public bool IsSynchronous { get; set; }
+        public bool IsParallel { get; set; }
 
         public Step()
         {
@@ -163,19 +255,28 @@ namespace Easy.SequenceManager
     {
         public string SubSequenceFilePath { get; set; }
         public Sequence Sequence { get; set; }
-        private int CurrentStepIndex = 0; // Internal index for sub-sequence
+        public int CurrentStepIndex = 0;  // Internal index for sub-sequence
+
         public override List<SequenceElement> GetNextElements()
         {
-            if (Sequence != null && CurrentStepIndex < Sequence.Elements.Count)
+            List<SequenceElement> nextElements = new List<SequenceElement>();
+            if (Sequence != null)
             {
-                var elements = Sequence.Elements.Skip(CurrentStepIndex).TakeWhile(e => e.IsSynchronous).ToList();
-                CurrentStepIndex += elements.Count;
-                return elements;
+                while (CurrentStepIndex < Sequence.Elements.Count)
+                {
+                    nextElements.Add(Sequence.Elements[CurrentStepIndex]);
+                    CurrentStepIndex++;
+                }
+                if (CurrentStepIndex < Sequence.Elements.Count && nextElements.Count == 0)
+                {
+                    nextElements.Add(Sequence.Elements[CurrentStepIndex]);
+                    CurrentStepIndex++;
+                }
             }
-            return new List<SequenceElement>();
+            return nextElements;
         }
-
     }
+
 
     /// <summary>
     /// This is a dataclass to hold information about a parameter. It is used in the Step class within a list.

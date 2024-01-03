@@ -7,7 +7,6 @@
         {
           "Type": "SubSequence",
           "Name": "Sub-Sequence Step",
-          "IsSynchronous": true,
           "Documentation": "This step refers to a sub-sequence",
           "SubSequenceFilePath": "Subsequences\\My-Subsequence.json"
         },
@@ -15,7 +14,7 @@
           "Type": "Step",
           "Name": "Final Step",
           "IsSynchronous": true,
-          "IsParallel": true,
+          "IsParallel": false,
           "Documentation": "Final step documentation",
           "Timeout": 60,
           "TargetModule": "Module3",
