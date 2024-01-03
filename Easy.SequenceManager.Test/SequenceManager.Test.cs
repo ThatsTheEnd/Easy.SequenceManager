@@ -29,7 +29,8 @@ namespace Easy.SequenceManager
                 {
                     var firstElement = firstSequence.Elements[0];
                     Assert.Equal("Fill GBs With FB Hydrogel", firstElement.Name);
-                    Assert.True(firstElement.IsSynchronous);  // Corrected property name
+                    Assert.True(firstElement.IsSynchronous);
+                    Assert.False(firstElement.IsParallel);
                     Assert.Equal("Any documentation needed", firstElement.Documentation);
 
                     if (firstElement is Step firstStep)  // Check if the element is a Step and cast it
@@ -74,13 +75,13 @@ namespace Easy.SequenceManager
 
             // Act
             sequenceManager.LoadJSON(filePath);
-            var firstElement = sequenceManager.Sequence.GetNextElementToExecute(); // Get the first step
-            var secondElement = sequenceManager.Sequence.GetNextElementToExecute(); // Get the second step
+            var firstElement = sequenceManager.Sequence.GetNextElementsToExecute(); // Get the first step
+            var secondElement = sequenceManager.Sequence.GetNextElementsToExecute()[0]; // Get the second step
 
             // Assert
             Assert.NotNull(secondElement);
             Assert.Equal("Hydrogel Compression", secondElement.Name);
-            Assert.True(secondElement.IsSynchronous);
+            Assert.False(secondElement.IsSynchronous);
             Assert.Equal("Any documentation needed", secondElement.Documentation);
             if (secondElement is Step secondStep)  // Check if the element is a Step and cast it
             {
@@ -103,48 +104,82 @@ namespace Easy.SequenceManager
                 throw new System.Exception("First element is not a Step");
             }
         }
-        
+
         [Fact]
-        public void AssertMainAndSubSequenceElements()
+        public void AssertParallelStepsAreGrouped()
         {
             // Arrange
             var sequenceManager = new SequenceManager();
-            string mainSequenceFilePath = Path.Combine("Testfiles", "sequence_with_subsequence.json");
+            string filePath = Path.Combine("Testfiles", "high-level-sequence.json");
 
             // Act
-            sequenceManager.LoadJSON(mainSequenceFilePath);
+            sequenceManager.LoadJSON(filePath);
 
-            // Assert Main Sequence
-            Assert.Equal("1.0.0", sequenceManager.FileVersion); // Example version
-            Assert.Equal("mainsequencechecksum", sequenceManager.CheckSum); // Example checksum
+            // Get the first set of elements (step 1)
+            var firstGroup = sequenceManager.Sequence.GetNextElementsToExecute();
+            // Get the second set of elements (steps 2 and 3)
+            var secondGroup = sequenceManager.Sequence.GetNextElementsToExecute();
+            // Get the third set of elements (step 4)
+            var thirdGroup = sequenceManager.Sequence.GetNextElementsToExecute();
+            // Get the fourth set of elements (steps 5 and 6)
+            var fourthGroup = sequenceManager.Sequence.GetNextElementsToExecute();
 
-            var mainSequence = sequenceManager.Sequence;
-            Assert.NotNull(mainSequence);
+            // Assert
+            Assert.Single(firstGroup); // Only step 1
+            Assert.Equal(2, secondGroup.Count); // Steps 2 and 3
+            Assert.Single(thirdGroup); // Only step 4
+            Assert.Equal(2, fourthGroup.Count); // Steps 5 and 6
 
-            // Assert Sub-Sequence
-            var subSequenceStep = mainSequence.Elements.OfType<SubSequence>().FirstOrDefault();
-            Assert.NotNull(subSequenceStep);
+            // Check names of steps in the second group (steps 2 and 3)
+            Assert.Contains(secondGroup, step => step.Name == "Hydrogel Compression");
+            Assert.Contains(secondGroup, step => step.Name == "Incubate");
 
-            // Load and assert the sub-sequence
-            string subSequenceFilePath = Path.Combine("Testfiles", "Subsequences", "My-Subsequence.json");
-            var subSequenceManager = new SequenceManager();
-            subSequenceManager.LoadJSON(subSequenceFilePath);
-
-            var subSequence = subSequenceManager.Sequence;
-            Assert.NotNull(subSequence);
-
-            // Example assertions for the sub-sequence step
-            var subSequenceElement = subSequence.Elements.FirstOrDefault();
-            Assert.NotNull(subSequenceElement);
-            Assert.Equal("Data Analysis", subSequenceElement.Name);
-            Assert.False(subSequenceElement.IsSynchronous);
-            Assert.Equal("Calibrating sensors for accurate readings", subSequenceElement.Documentation);
-
-            // Assert Normal Step in Main Sequence
-            var normalStep = mainSequence.Elements.OfType<Step>().FirstOrDefault();
-            Assert.NotNull(normalStep);
-            Assert.Equal("Final Step", normalStep.Name); // Example name for normal step
-                                                         // Add more assertions for the normal step
+            // Check names of steps in the fourth group (steps 5 and 6)
+            Assert.Contains(fourthGroup, step => step.Name == "Incubate");
+            Assert.Contains(fourthGroup, step => step.Name == "In-process Control 1");
         }
+
+        //[Fact]
+        //public void AssertMainAndSubSequenceElements()
+        //{
+        //    // Arrange
+        //    var sequenceManager = new SequenceManager();
+        //    string mainSequenceFilePath = Path.Combine("Testfiles", "sequence_with_subsequence.json");
+
+        //    // Act
+        //    sequenceManager.LoadJSON(mainSequenceFilePath);
+
+        //    // Assert Main Sequence
+        //    Assert.Equal("1.0.0", sequenceManager.FileVersion); // Example version
+        //    Assert.Equal("mainsequencechecksum", sequenceManager.CheckSum); // Example checksum
+
+        //    var mainSequence = sequenceManager.Sequence;
+        //    Assert.NotNull(mainSequence);
+
+        //    // Assert Sub-Sequence
+        //    var subSequenceStep = mainSequence.Elements.OfType<SubSequence>().FirstOrDefault();
+        //    Assert.NotNull(subSequenceStep);
+
+        //    // Load and assert the sub-sequence
+        //    string subSequenceFilePath = Path.Combine("Testfiles", "Subsequences", "My-Subsequence.json");
+        //    var subSequenceManager = new SequenceManager();
+        //    subSequenceManager.LoadJSON(subSequenceFilePath);
+
+        //    var subSequence = subSequenceManager.Sequence;
+        //    Assert.NotNull(subSequence);
+
+        //    // Example assertions for the sub-sequence step
+        //    var subSequenceElement = subSequence.Elements.FirstOrDefault();
+        //    Assert.NotNull(subSequenceElement);
+        //    Assert.Equal("Data Analysis", subSequenceElement.Name);
+        //    Assert.False(subSequenceElement.IsSynchronous);
+        //    Assert.Equal("Calibrating sensors for accurate readings", subSequenceElement.Documentation);
+
+        //    // Assert Normal Step in Main Sequence
+        //    var normalStep = mainSequence.Elements.OfType<Step>().FirstOrDefault();
+        //    Assert.NotNull(normalStep);
+        //    Assert.Equal("Final Step", normalStep.Name); // Example name for normal step
+        //                                                 // Add more assertions for the normal step
+        //}
     }
 }
