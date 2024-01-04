@@ -4,12 +4,12 @@
     "CheckSum": "cc9d1910bb6e9e878a322eb4add25093",
     "Sequence": {
       "Elements": [
-        {"Type": "Step", "Name": "Fill GBs With FB Hydrogel", "IsSynchronous": true, "IsParallel": false, "Documentation": "Any documentation needed", "Timeout": 30, "TargetModule": "",
+        {"Type": "Step", "Name": "Fill Box With Stuff", "IsSynchronous": true, "IsParallel": false, "Documentation": "Any documentation needed", "Timeout": 30, "TargetModule": "",
           "Parameters": [
             {"Name": "pumpSpeed", "Type": "Integer", "Value": "500", "Required": true, "DefaultValue": "300", "HooverOverInfo": "Pump speed in RPM" },
             {"Name": "pumpMode", "Type": "String", "Value": "Auto", "Required": false, "DefaultValue": "Manual", "HooverOverInfo": "Pump operation mode" }
           ] },
-        {"Type": "Step", "Name": "Hydrogel Compression", "IsSynchronous": true, "IsParallel": true, "Documentation": "Any documentation needed", "Timeout": 45, "TargetModule": "",
+        {"Type": "Step", "Name": "Compression", "IsSynchronous": true, "IsParallel": true, "Documentation": "Any documentation needed", "Timeout": 45, "TargetModule": "",
           "Parameters": [
             {
               "Name": "axisTargetPosition1",
@@ -44,7 +44,7 @@
               "HooverOverInfo": "Target position for the axis movement"
             }
           ] },
-        {"Type": "Step", "Name": "Incubate", "IsSynchronous": true, "IsParallel": true, "Documentation": "Any documentation needed", "Timeout": 45, "TargetModule": "",
+        {"Type": "Step", "Name": "Wait", "IsSynchronous": true, "IsParallel": true, "Documentation": "Any documentation needed", "Timeout": 45, "TargetModule": "",
           "Parameters": [
             {
               "Name": "timeTarget",
@@ -55,23 +55,23 @@
               "HooverOverInfo": "Incubation Time before next step"
             }
           ] },
-        {"Type": "Step", "Name": "Exchange Media", "IsSynchronous": true, "IsParallel": false, "Documentation": "Any documentation needed", "Timeout": 45, "TargetModule": "",
+        {"Type": "Step", "Name": "Exchange Something", "IsSynchronous": true, "IsParallel": false, "Documentation": "Any documentation needed", "Timeout": 45, "TargetModule": "",
           "Parameters": [
             {
-              "Name": "amountFbBuffer",
+              "Name": "amountBuffer",
               "Type": "Float",
               "Value": "10.5",
               "Required": true,
               "DefaultValue": "0.0",
-              "HooverOverInfo": "Amount of FB buffer"
+              "HooverOverInfo": "Amount of buffer"
             },
             {
-              "Name": "amountKcBuffer",
+              "Name": "amountBuffer",
               "Type": "Float",
               "Value": "10.5",
               "Required": true,
               "DefaultValue": "0.0",
-              "HooverOverInfo": "Amount of KC Buffer"
+              "HooverOverInfo": "Amount of Buffer"
             }
           ] },
         {"Type": "Step", "Name": "Incubate", "IsSynchronous": true, "IsParallel": true, "Documentation": "Any documentation needed", "Timeout": 45, "TargetModule": "",

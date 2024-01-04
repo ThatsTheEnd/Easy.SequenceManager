@@ -93,6 +93,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SequenceElements.Tests.cs" />
+    <Compile Include="SequenceManagerWithContext.Test.cs" />
     <Compile Include="ExecutionContext.Test.cs" />
     <Compile Include="Parameter.Tests.cs" />
     <Compile Include="SequenceManager.Test.cs" />

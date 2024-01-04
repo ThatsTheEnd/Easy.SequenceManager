@@ -1,0 +1,26 @@
+@startuml
+
+class ExecutionContext {
+    -ISequenceElement _sequenceElement
+    +void PushSequence(ISequenceElement sequenceElement)
+    +ISequenceElement PopSequence()
+    +ISequenceElement GetCurrentSequence()
+    +bool HasSequences()
+}
+
+class Parameter {
+    -string _name
+    -string _type
+    -string _value
+    -bool _required
+    -string _defaultValue
+    -string _hooverOverInfo
+    +string Name { get; set; }
+    +string Type { get; set; }
+    +string Value { get; set; }
+    +bool Required { get; set; }
+    +string DefaultValue { get; set; }
+    +string HooverOverInfo { get; set; }
+}
+
+@enduml

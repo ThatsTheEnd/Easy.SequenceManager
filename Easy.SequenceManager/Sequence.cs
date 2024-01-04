@@ -15,17 +15,23 @@ namespace Easy.SequenceManager
         {
             Elements = new List<SequenceElement>();
         }
-
+        /// <summary>
+        /// Returns the next set of elements to execute.
+        /// This is wrapper around GetNextElements() to satisfy the ISequenceElement interface.
+        /// The design of the interface has been added later and there is no harm in wrapping the method, that worked from the beginning, in another method.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public override List<SequenceElement> GetNextElements(ExecutionContext context)
         {
-            return GetNextElementsToExecute();
+            return GetNextElements();
         }
 
         /// <summary>
         /// Returns the next set of elements to execute.
         /// </summary>
         /// <returns>List of SequenceElement or empty list if no more elements are available.</returns>
-        public List<SequenceElement> GetNextElementsToExecute()
+        private List<SequenceElement> GetNextElements()
         {
             List<SequenceElement> elementsToExecute = new List<SequenceElement>();
 

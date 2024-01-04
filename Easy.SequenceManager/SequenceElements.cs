@@ -1,10 +1,6 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Easy.SequenceManager
 {
@@ -17,26 +13,27 @@ namespace Easy.SequenceManager
         List<SequenceElement> GetNextElements(ExecutionContext context);
     }
 
-
     public abstract class SequenceElement : ISequenceElement
     {
         public string Name { get; set; }
         public string Documentation { get; set; }
+
         // Abstract method to get next elements
         public abstract List<SequenceElement> GetNextElements(ExecutionContext context);
-
     }
-
 
     public class Step : SequenceElement
     {
         public int Timeout { get; set; }
         public string TargetModule { get; set; }
+
         [JsonProperty("Parameters")]
         public List<Parameter> Parameters { get; set; }
+
         // The property IsParallel on two neighbouring steps is used to indicate that the steps are kicked of in parallel.
         // The property IsSynchronous is used to indicate that the step is synchronous, i.e. the orchestrator will wait for the step to finish before continuing.
         public bool IsSynchronous { get; set; }
+
         public bool IsParallel { get; set; }
 
         public Step()
@@ -59,7 +56,6 @@ namespace Easy.SequenceManager
 
         public SubSequence()
         {
-            
             // Initialization logic
         }
 
@@ -90,22 +86,40 @@ namespace Easy.SequenceManager
                 }
             }
         }
+
         public override List<SequenceElement> GetNextElements(ExecutionContext context)
         {
             List<SequenceElement> nextElements = new List<SequenceElement>();
-            if (Sequence != null)
+
+            if (Sequence != null && CurrentStepIndex < Sequence.Elements.Count)
             {
-                while (CurrentStepIndex < Sequence.Elements.Count)
+                var nextElement = Sequence.Elements[CurrentStepIndex];
+                nextElements.Add(nextElement);
+
+                // Check if the next element is a Step and if it is parallel
+                if (nextElement is Step step && step.IsParallel)
                 {
-                    nextElements.Add(Sequence.Elements[CurrentStepIndex]);
+                    // Add all subsequent parallel steps
                     CurrentStepIndex++;
+                    while (CurrentStepIndex < Sequence.Elements.Count && Sequence.Elements[CurrentStepIndex] is Step nextStep && nextStep.IsParallel)
+                    {
+                        nextElements.Add(nextStep);
+                        CurrentStepIndex++;
+                    }
                 }
-                if (CurrentStepIndex < Sequence.Elements.Count && nextElements.Count == 0)
+                else
                 {
-                    nextElements.Add(Sequence.Elements[CurrentStepIndex]);
+                    // Move to the next element if it's not a parallel step
                     CurrentStepIndex++;
                 }
             }
+
+            // Check if the sub-sequence is completed and if so, pop it from the context
+            if (CurrentStepIndex >= Sequence.Elements.Count)
+            {
+                context.PopSequence(); // Remove this sub-sequence as it's completed
+            }
+
             return nextElements;
         }
     }
