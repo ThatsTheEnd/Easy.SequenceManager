@@ -15,6 +15,11 @@ namespace Easy.SequenceManager
         public string BaseDirectory { get; private set; }
         public Sequence Sequence { get; set; }
 
+        public SequenceManager()
+        {
+            LogHelper.ConfigureLog4Net();
+        }
+
         /// <summary>
         /// Loads a sequence from a JSON file and initializes the sequence elements.
         /// </summary>

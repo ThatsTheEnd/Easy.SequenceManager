@@ -1,0 +1,26 @@
+{
+  "SequenceManager": {
+    "FileVersion": "0.1.0",
+    "CheckSum": "cc9d1910bb6e9e878a322eb4add25093",
+    "_comment":  "the property IsParallel on two neighbouring steps is used to indicate that the steps are kicked of in parallel. The property IsSynchronous is used to indicate that the step is synchronous, i.e. the orchestrator will wait for the step to finish before continuing.",
+    "Sequence": {
+      "Elements": [
+        {
+          "Type": "Step", "Name": "Fill Box With Stuff", "IsSynchronous": true, "IsParallel": false, "Documentation": "Any documentation needed", "Timeout": 30, "TargetModule": "",
+          "Parameters": [
+            {"Name": "pumpSpeed", "Type": "Integer","Value": "500","Required": true,"DefaultValue": "300","HooverOverInfo": "Pump speed in RPM"},
+            {"Name": "pumpMode","Type": "String","Value": "Auto","Required": false,"DefaultValue": "Manual","HooverOverInfo": "Pump operation mode"} ]
+        },
+        {
+          "Type": "Step", "Name": "Compression", "IsSynchronous": false, "IsParallel": false, "Documentation": "Any documentation needed", "Timeout": 45, "TargetModule": "",
+          "Parameters": [
+            {"Name": "axisTargetPosition1", "Type": "Float", "Value": "10.5", "Required": true, "DefaultValue": "0.0", "HooverOverInfo": "Target position for the axis movement" },
+            {"Name": "axisSpeed1", "Type": "Float", "Value": "10.5", "Required": true, "DefaultValue": "0.0", "HooverOverInfo": "Target position for the axis movement" },
+            {"Name": "axisTargetPosition2", "Type": "Float", "Value": "10.5", "Required": true, "DefaultValue": "0.0", "HooverOverInfo": "Target position for the axis movement"},
+            {"Name": "axisSpeed2", "Type": "Float", "Value": "10.5", "Required": true, "DefaultValue": "0.0", "HooverOverInfo": "Target position for the axis movement"} 
+          ]
+        }
+      ]
+    }
+  }
+}

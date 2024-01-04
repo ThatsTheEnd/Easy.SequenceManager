@@ -1,0 +1,29 @@
+{
+    "SequenceManager": {
+      "FileVersion": "1.0",
+      "CheckSum": "checksum_main",
+      "Sequence": {
+        "Elements": [
+          {
+            "Type": "Step",
+            "Name": "Main Step 1",
+            "IsParallel": false,
+            "Documentation": "First step in main sequence"
+          },
+          {
+            "Type": "SubSequence",
+            "Name": "Sub Sequence",
+            "SubSequenceFilePath": "sub.json",
+            "Documentation": "Sub-sequence"
+          },
+          {
+            "Type": "Step",
+            "Name": "Main Step 3",
+            "IsParallel": false,
+            "Documentation": "Third step in main sequence"
+          }
+        ]
+      }
+    }
+  }
+  
