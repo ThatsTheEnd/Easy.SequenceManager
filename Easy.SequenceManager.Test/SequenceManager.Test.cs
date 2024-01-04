@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
-namespace Easy.SequenceManager
+namespace Easy.SequenceManager.Test
 {
     public class SequenceManagerTests
     {

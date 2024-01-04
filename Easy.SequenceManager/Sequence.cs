@@ -6,7 +6,7 @@ using System.Linq;
 namespace Easy.SequenceManager
 {
 
-    public class Sequence
+    public class Sequence : SequenceElement
     {
         private int CurrentExecutingStepIndex = 0;
         public List<SequenceElement> Elements { get; set; }
@@ -14,6 +14,11 @@ namespace Easy.SequenceManager
         public Sequence()
         {
             Elements = new List<SequenceElement>();
+        }
+
+        public override List<SequenceElement> GetNextElements(ExecutionContext context)
+        {
+            return GetNextElementsToExecute();
         }
 
         /// <summary>
@@ -72,45 +77,6 @@ namespace Easy.SequenceManager
             return elementsToExecute;
         }
 
-
-
-        /// <summary>
-        /// Processes the next element when it is a Step. If the current step is parallel,
-        /// it aggregates subsequent parallel steps. If the current step is not parallel,
-        /// it returns only this step.
-        /// </summary>
-        /// <param name="currentStep">The current Step element to be processed.</param>
-        /// <returns>A list of SequenceElement, either containing just the current step,
-        /// or the current step along with subsequent parallel steps.</returns>
-        private List<SequenceElement> HandleNextStep(Step currentStep)
-        {
-            List<SequenceElement> elementsToExecute = new List<SequenceElement> { currentStep };
-
-            // Add subsequent parallel steps if the current step is parallel
-            if (currentStep.IsParallel)
-            {
-                CurrentExecutingStepIndex++;
-                while (CurrentExecutingStepIndex < Elements.Count)
-                {
-                    if (Elements[CurrentExecutingStepIndex] is Step nextStep && nextStep.IsParallel)
-                    {
-                        elementsToExecute.Add(nextStep);
-                        CurrentExecutingStepIndex++;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                // Increment index for non-parallel step
-                CurrentExecutingStepIndex++;
-            }
-            return elementsToExecute;
-        }
-
         /// <summary>
         /// Processes the next element when it is a SubSequence. It retrieves the next elements
         /// from the sub-sequence. If the sub-sequence has more elements to execute, it returns them.
@@ -155,41 +121,5 @@ namespace Easy.SequenceManager
             // Indicate that the sub-sequence is completed
             return new List<SequenceElement>();
         }
-
-
-        private List<SequenceElement> HandleSubSequenceStep(SubSequence subSequence, Step step)
-        {
-            List<SequenceElement> elementsToExecute = new List<SequenceElement> { step };
-
-            if (step.IsParallel)
-            {
-                subSequence.CurrentStepIndex++;
-                while (subSequence.CurrentStepIndex < subSequence.Sequence.Elements.Count)
-                {
-                    if (subSequence.Sequence.Elements[subSequence.CurrentStepIndex] is Step nextStep && nextStep.IsParallel)
-                    {
-                        elementsToExecute.Add(nextStep);
-                        subSequence.CurrentStepIndex++;
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                subSequence.CurrentStepIndex++;
-            }
-            return elementsToExecute;
-        }
-
-
-
-
-    }
-
-
-
-
+     }
 }
