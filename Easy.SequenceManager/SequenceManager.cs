@@ -17,7 +17,6 @@ namespace Easy.SequenceManager
 
         public SequenceManager()
         {
-            LogHelper.ConfigureLog4Net();
         }
 
         /// <summary>

@@ -15,9 +15,6 @@ namespace Easy.SequenceManager
             // Initialization logic
         }
 
-        /// <summary>
-        /// Loads the sub-sequence from its JSON file, and recursively loads any nested sub-sequences.
-        /// </summary>
         public void Initialize(string baseDirectory)
         {
             this.baseDirectory = baseDirectory;
@@ -31,7 +28,6 @@ namespace Easy.SequenceManager
                 subSequenceManager.LoadJsonSequence(fullPath);
                 Sequence = subSequenceManager.Sequence;
 
-                // Recursively load nested sub-sequences
                 foreach (var element in Sequence.Elements)
                 {
                     if (element is SubSequence nestedSubSequence)
@@ -50,30 +46,32 @@ namespace Easy.SequenceManager
             if (Sequence != null && CurrentStepIndex < Sequence.Elements.Count)
             {
                 var nextElement = Sequence.Elements[CurrentStepIndex];
-                nextElements.Add(nextElement);
+                if (nextElement is SubSequence nestedSubSequence)
+                {
+                    context.PushSequence(nestedSubSequence); // Push the nested sub-sequence onto the stack
+                    nextElements.AddRange(nestedSubSequence.GetNextElements(context));
+                    CurrentStepIndex++;
+                }
+                else
+                {
+                    nextElements.Add(nextElement);
+                    CurrentStepIndex++;
+                }
 
-                // Check if the next element is a Step and if it is parallel
+                // Add subsequent parallel steps if the current step is parallel
                 if (nextElement is Step step && step.IsParallel)
                 {
-                    // Add all subsequent parallel steps
-                    CurrentStepIndex++;
                     while (CurrentStepIndex < Sequence.Elements.Count && Sequence.Elements[CurrentStepIndex] is Step nextStep && nextStep.IsParallel)
                     {
                         nextElements.Add(nextStep);
                         CurrentStepIndex++;
                     }
                 }
-                else
-                {
-                    // Move to the next element if it's not a parallel step
-                    CurrentStepIndex++;
-                }
             }
 
-            // Check if the sub-sequence is completed and if so, pop it from the context
             if (CurrentStepIndex >= Sequence.Elements.Count)
             {
-                context.PopSequence(); // Remove this sub-sequence as it's completed
+                context.PopSequence(); // Pop this sub-sequence as it's completed
             }
 
             return nextElements;

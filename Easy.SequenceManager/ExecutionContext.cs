@@ -20,6 +20,7 @@ namespace Easy.SequenceManager
         /// <param name="sequence">The sequence to push onto the stack.</param>
         public void PushSequence(ISequenceElement sequence)
         {
+            Console.WriteLine($"Pushing sequence '{sequence.ToString()}' onto stack.");
             sequenceStack.Push(sequence);
         }
 
@@ -30,6 +31,7 @@ namespace Easy.SequenceManager
         /// <returns>The sequence that was at the top of the stack.</returns>
         public ISequenceElement PopSequence()
         {
+            Console.WriteLine($"Popping sequence '{sequenceStack.Peek().ToString()}' from stack.");
             return sequenceStack.Count > 0 ? sequenceStack.Pop() : null;
         }
 

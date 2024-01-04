@@ -19,28 +19,33 @@ namespace Easy.SequenceManager
             if (CurrentExecutingStepIndex < Elements.Count)
             {
                 SequenceElement currentElement = Elements[CurrentExecutingStepIndex];
-                elementsToExecute.AddRange(currentElement.GetNextElements(context));
 
-                // Increment index only if the current element is not a sub-sequence
-                if (!(currentElement is SubSequence))
+                if (currentElement is SubSequence subSequence)
                 {
+                    context.PushSequence(subSequence); // Push the sub-sequence onto the stack
+                    elementsToExecute.AddRange(subSequence.GetNextElements(context));
                     CurrentExecutingStepIndex++;
                 }
-
-                // Handle parallel steps
-                if (currentElement is Step step && step.IsParallel)
+                else
                 {
-                    while (CurrentExecutingStepIndex < Elements.Count)
+                    elementsToExecute.AddRange(currentElement.GetNextElements(context));
+                    CurrentExecutingStepIndex++;
+
+                    // Handle parallel steps
+                    if (currentElement is Step step && step.IsParallel)
                     {
-                        var nextElement = Elements[CurrentExecutingStepIndex];
-                        if (nextElement is Step nextStep && nextStep.IsParallel)
+                        while (CurrentExecutingStepIndex < Elements.Count)
                         {
-                            elementsToExecute.AddRange(nextStep.GetNextElements(context));
-                            CurrentExecutingStepIndex++;
-                        }
-                        else
-                        {
-                            break; // Stop if the next step is not parallel
+                            var nextElement = Elements[CurrentExecutingStepIndex];
+                            if (nextElement is Step nextStep && nextStep.IsParallel)
+                            {
+                                elementsToExecute.AddRange(nextStep.GetNextElements(context));
+                                CurrentExecutingStepIndex++;
+                            }
+                            else
+                            {
+                                break; // Stop if the next step is not parallel
+                            }
                         }
                     }
                 }
