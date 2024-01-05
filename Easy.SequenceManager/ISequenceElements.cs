@@ -11,6 +11,9 @@ namespace Easy.SequenceManager
         List<SequenceElement> GetNextElements(ExecutionContext context);
     }
 
+    /// <summary>
+    /// Since .net framework 4.8 does not support abstract properties, we have to use an abstract class instead of an interface.
+    /// </summary>
     public abstract class SequenceElement : ISequenceElement
     {
         public string Name { get; set; }

@@ -1,26 +1,74 @@
-@startuml
+@startuml Easy.SequenceManager Class Diagram
+
+interface ISequenceElement {
+    +GetNextElements(context: ExecutionContext): List<SequenceElement>
+}
 
 class ExecutionContext {
-    -ISequenceElement _sequenceElement
-    +void PushSequence(ISequenceElement sequenceElement)
-    +ISequenceElement PopSequence()
-    +ISequenceElement GetCurrentSequence()
-    +bool HasSequences()
+    -sequenceStack: Stack<ISequenceElement>
+    +PushSequence(sequence: ISequenceElement): void
+    +PopSequence(): ISequenceElement
+    +GetCurrentSequence(): ISequenceElement
+    +HasSequences: bool
+}
+
+abstract class SequenceElement {
+    +Name: string
+    +Documentation: string
+    +GetNextElements(context: ExecutionContext): List<SequenceElement>
+}
+
+class Sequence {
+    -CurrentExecutingStepIndex: int
+    +Elements: List<SequenceElement>
+    +GetNextElements(context: ExecutionContext): List<SequenceElement>
+}
+
+class Step {
+    +Timeout: int
+    +TargetModule: string
+    +Parameters: List<Parameter>
+    +IsSynchronous: bool
+    +IsParallel: bool
+    +GetNextElements(context: ExecutionContext): List<SequenceElement>
+}
+
+class SubSequence {
+    +SubSequenceFilePath: string
+    +Sequence: Sequence
+    -baseDirectory: string
+    -CurrentStepIndex: int
+    +Initialize(baseDirectory: string): void
+    +GetNextElements(context: ExecutionContext): List<SequenceElement>
+}
+
+class SequenceManager {
+    +FileVersion: string
+    -context: ExecutionContext
+    +CheckSum: string
+    +BaseDirectory: string
+    +Sequence: Sequence
+    +LoadJsonSequence(filePath: string): void
+    +InitializeExecution(): void
+    +GetNextStepsToExecute(): List<SequenceElement>
 }
 
 class Parameter {
-    -string _name
-    -string _type
-    -string _value
-    -bool _required
-    -string _defaultValue
-    -string _hooverOverInfo
-    +string Name { get; set; }
-    +string Type { get; set; }
-    +string Value { get; set; }
-    +bool Required { get; set; }
-    +string DefaultValue { get; set; }
-    +string HooverOverInfo { get; set; }
+    +Name: string
+    +Type: string
+    +Value: string
+    +Required: bool
+    +DefaultValue: string
+    +HooverOverInfo: string
 }
+
+ISequenceElement <|-down- SequenceElement
+SequenceElement <|-- Step
+SequenceElement <|-- SubSequence
+SequenceElement <|-down- Sequence
+SequenceManager --> ExecutionContext
+SequenceManager --> Sequence :  "1"
+SubSequence <-- Sequence: "0..n"
+Step --> Parameter : "0..n"
 
 @enduml

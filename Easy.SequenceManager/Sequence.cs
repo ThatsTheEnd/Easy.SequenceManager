@@ -2,6 +2,11 @@
 
 namespace Easy.SequenceManager
 {
+    /// <summary>
+    /// The Sequence class represents a sequence of elements to be executed in a specific order.
+    /// It maintains a list of SequenceElement objects and provides functionality to retrieve the next elements to be executed.
+    /// The Sequence class supports the execution of sub-sequences and parallel steps.
+    /// </summary>
     public class Sequence : SequenceElement
     {
         private int CurrentExecutingStepIndex = 0;
@@ -11,7 +16,7 @@ namespace Easy.SequenceManager
         {
             Elements = new List<SequenceElement>();
         }
-
+        
         public override List<SequenceElement> GetNextElements(ExecutionContext context)
         {
             List<SequenceElement> elementsToExecute = new List<SequenceElement>();

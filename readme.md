@@ -46,11 +46,16 @@ The JSON file should follow this structure:
 }
 ```
 ## Classes
+The class diagram is shown in the file ![class_diagram.puml] and also visualized here:
+
+![Easy_SequenceManager_Class_Diagram.png]
+
 - SequenceManager: Main class to load and manage sequences.
 - Sequence: Represents a sequence of steps or sub-sequences.
 - Step: Represents an individual step in a sequence.
 - SubSequence: Represents a nested sequence.
 - Parameter: Represents parameters used in steps.
+
 ## Methods
 LoadJsonSequence(string filePath): Loads a sequence from a JSON file.
 GetNextElementsToExecute(): Returns the next set of elements (steps or sub-sequences) to be executed.
