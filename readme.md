@@ -1,6 +1,6 @@
-# Easy Sequence Manager
+# Intention and Purpose of the Easy Sequence Manager
 
-The Easy Sequence Manager is a C# library designed to parse and execute sequences of steps and nested sub-sequences defined in JSON files. It handles the execution order of these sequences, including parallel and synchronous execution of steps.
+The intention of this C# sequencer or scheduler library is to serve as a standalone package that has control over the sequence of steps that have to be executed, but doesn't execute them on its own. To use this library, a different module that serves as orchestrator or brain of an application would call this Easy.SequenceManager to ask which step (or more precise: a series of parallel steps) should be executed next. If and when this next step is executed is then up to the orchestrator module.
 
 ## Features
 
@@ -78,3 +78,10 @@ while (true)
 
 # Development
 This project is open for enhancements and contributions. Feel free to fork and improve the functionality or to add support for more complex sequence structures.
+
+## Open Todo Items
+- Get and Set Cheksum of a sequence (including its subsequences)
+- ForLoop Step type
+- Working with variables:
+  - Enable Output parameter of steps and save outputs to variables
+  - Define variables already in sequence structure

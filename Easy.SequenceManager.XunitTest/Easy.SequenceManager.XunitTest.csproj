@@ -51,6 +51,9 @@
     <None Update="Testfiles\sequence_with_subsequence.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Testfiles\single-step-details.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Testfiles\sub-sub.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

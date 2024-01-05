@@ -2,6 +2,7 @@
 using Easy.SequenceManager;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace Easy.SequenceManager.Test
 {
@@ -166,6 +167,42 @@ namespace Easy.SequenceManager.Test
             // Assert no more steps
             var sixthStepGroup = sequenceManager.GetNextStepsToExecute();
             Assert.Empty(sixthStepGroup);
+        }
+
+        [Fact]
+        public void TestSingleStepDetailsAsJson()
+        {
+            // Arrange
+            var sequenceManager = new SequenceManager();
+            string filePath = Path.Combine("Testfiles", "single-step-details.json");
+
+            // Act
+            sequenceManager.LoadJsonSequence(filePath);
+            sequenceManager.InitializeExecution();
+            string json = sequenceManager.GetNextStepsToExecuteAsJson();
+
+            // Assert
+            // Check if the JSON contains expected step details
+            var jArray = JArray.Parse(json);
+            foreach (var step in jArray)
+            {
+                Assert.NotNull(step);
+                Assert.True(step.HasValues);
+            }   
+
+            // Assert first step "Move Axis"
+            var firstStep = jArray[0];
+            Assert.Equal("Move Axis", firstStep["Name"].Value<string>());
+            Assert.Equal("Axis", firstStep["TargetModule"].Value<string>());
+
+            json = sequenceManager.GetNextStepsToExecuteAsJson();
+            jArray = JArray.Parse(json);
+            // Assert second step "Wait"
+            var secondStep = jArray[0];
+            Assert.Equal("Wait", secondStep["Name"].Value<string>());
+            Assert.Equal("Axis", secondStep["TargetModule"].Value<string>());
+
+            // Additional assertions can be added based on specific requirements
         }
     }
 }

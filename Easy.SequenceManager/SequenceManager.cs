@@ -88,5 +88,18 @@ namespace Easy.SequenceManager
 
             return new List<SequenceElement>(); // Return an empty list when there are no more elements to execute
         }
+
+        /// <summary>
+        /// This function takes the output from GetNextStepstoExecute() and transfors the list of sequence elements back
+        /// into a json body that can be sent to the client. The default way of the stirng is beautified but if the input is
+        /// overwritten as false, the string will be minified.
+        /// </summary>
+        public string GetNextStepsToExecuteAsJson(bool beautify = true)
+        {
+            List<SequenceElement> nextSteps = GetNextStepsToExecute();
+            string json = JsonConvert.SerializeObject(nextSteps, beautify ? Formatting.Indented : Formatting.None);
+            return json;
+        }
+
     }
 }
