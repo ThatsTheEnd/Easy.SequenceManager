@@ -46,9 +46,9 @@ The JSON file should follow this structure:
 }
 ```
 ## Classes
-The class diagram is shown in the file ![class_diagram.puml] and also visualized here:
+The class diagram is shown in the file [class_diagram.puml](class_diagram.puml) and also visualized here:
 
-![Easy_SequenceManager_Class_Diagram.png]
+[Easy_SequenceManager_Class_Diagram.png](Easy_SequenceManager_Class_Diagram.png)
 
 - SequenceManager: Main class to load and manage sequences.
 - Sequence: Represents a sequence of steps or sub-sequences.
