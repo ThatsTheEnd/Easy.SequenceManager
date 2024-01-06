@@ -1,0 +1,23 @@
+{
+  "SequenceManager": {
+    "FileVersion": "0.1.0",
+    "CheckSum": "cc9d1910bb6e9e878a322eb4add25093",
+    "_comment":  "the property IsParallel on two neighbouring steps is used to indicate that the steps are kicked of in parallel. The property IsSynchronous is used to indicate that the step is synchronous, i.e. the orchestrator will wait for the step to finish before continuing.",
+    "Sequence": {
+      "Elements": [
+        {
+          "Type": "Step", "Name": "Move Axis", "IsSynchronous": true, "IsParallel": false, "Documentation": "Any documentation needed", "Timeout": 30, "TargetModule": "Axis",
+          "Parameters": [
+            {"Name": "TargetAxis", "Type": "String","Value": "zAxis-1","Required": true,"DefaultValue": "","HooverOverInfo": "Target axis for this command"},
+            {"Name": "TargetPosition", "Type": "Float","Value": "10.5","Required": true,"DefaultValue": "0.0","HooverOverInfo": "Target position for the axis movement"},
+            {"Name": "Speed", "Type": "Float","Value": "10.5","Required": true,"DefaultValue": "0.0","HooverOverInfo": "Target position for the axis movement"} ]
+        },
+        {
+          "Type":"Step", "Name":"Wait", "IsSynchronous":true, "IsParallel":false, "Documentation":"Any documentation needed", "Timeout":30, "TargetModule":"Axis",
+          "Parameters":[
+            {"Name":"WaitTime", "Type":"Float", "Value":"10.5", "Required":true, "DefaultValue":"0.0", "HooverOverInfo":"Wait time in seconds"} ]
+        }
+      ]
+    }
+  }
+}

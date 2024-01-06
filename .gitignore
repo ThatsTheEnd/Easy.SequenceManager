@@ -359,3 +359,5 @@ MigrationBackup/
 FodyWeavers.xsd
 Config/TestStandConfig/Cfg/Adapters.cfg
 Config/TestStandConfig/Cfg/GeneralEngine.cfg
+LabViewWrapper/Easy.SequenceManager.LabVIEW.aliases
+LabViewWrapper/Easy.SequenceManager.LabVIEW.lvlps
