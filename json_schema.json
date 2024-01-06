@@ -1,0 +1,54 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "SequenceManager": {
+        "type": "object",
+        "properties": {
+          "FileVersion": { "type": "string" },
+          "CheckSum": { "type": "string" },
+          "_comment": { "type": "string" },
+          "Sequence": {
+            "type": "object",
+            "properties": {
+              "Elements": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "Type": { "type": "string" },
+                    "Name": { "type": "string" },
+                    "IsSynchronous": { "type": "boolean" },
+                    "IsParallel": { "type": "boolean" },
+                    "Documentation": { "type": "string" },
+                    "Timeout": { "type": "integer" },
+                    "TargetModule": { "type": "string" },
+                    "Parameters": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "Name": { "type": "string" },
+                          "Type": { "type": "string" },
+                          "Value": { "type": "string" },
+                          "Required": { "type": "boolean" },
+                          "DefaultValue": { "type": "string" },
+                          "HooverOverInfo": { "type": "string" }
+                        },
+                        "required": ["Name", "Type", "Value", "Required"]
+                      }
+                    }
+                  },
+                  "required": ["Type", "Name", "IsSynchronous", "IsParallel", "Documentation", "Timeout", "TargetModule", "Parameters"]
+                }
+              }
+            },
+            "required": ["Elements"]
+          }
+        },
+        "required": ["FileVersion", "CheckSum", "_comment", "Sequence"]
+      }
+    },
+    "required": ["SequenceManager"]
+  }
+  
