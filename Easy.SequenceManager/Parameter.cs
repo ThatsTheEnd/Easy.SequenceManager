@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Newtonsoft.Json.Linq;
 
 namespace Easy.SequenceManager
 {
@@ -13,9 +9,12 @@ namespace Easy.SequenceManager
     {
         public string Name { get; set; }
         public string Type { get; set; }
-        public string Value { get; set; }
+        /// <summary>
+        /// The value of the parameter. This can be any JSON object.
+        /// </summary>
+        public JToken Value { get; set; }
         public bool Required { get; set; }
-        public string DefaultValue { get; set; }
+        public JToken DefaultValue { get; set; }
         public string HooverOverInfo { get; set; }
     }
 }
