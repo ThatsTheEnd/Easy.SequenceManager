@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package>
+  <metadata>
+    <id>ZE_Easy.SequenceManager</id>
+    <version>1.0.1</version>
+    <authors>nina</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <!-- Icon is used in Visual Studio's package manager UI -->
+    <icon>Icon.png</icon>
+    <!-- Any details about this particular release -->
+    <releaseNotes>Bug fixes and performance improvements</releaseNotes>
+    <projectUrl>https://ados.ps-zuehlke.com/Cutiss/C31081/_git/ZE_Easy.SequenceManager</projectUrl>
+    <description>Package description</description>
+    <copyright>$copyright$</copyright>
+    <tags>Tag1 Tag2</tags>
+    <dependencies>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="SampleDependency" version="1.0.0" />
+      </group>
+    </dependencies>
+  </metadata>
+  <!-- A readme.txt to display when the package is installed -->
+  <files>
+    <file src="..\readme.md" target="" />
+    <file src="..\Icons\Icon.png" target="" />
+    <file src="..\LabVIEWbuild\Easy.SequenceManager.dll" target="" />
+    <file src="..\LabVIEWbuild\Easy.SequenceManager.pdb" target="" />
+    <file src="..\LabVIEWbuild\minimum-high-level-sequence.json" target="" />
+    <file src="..\LabVIEWbuild\Newtonsoft.Json.dll" target="" />
+    <file src="..\LabVIEWbuild\Newtonsoft.Json.xml" target="" />
+    <file src="..\LabVIEWbuild\sequence_with_subsequence.json" target="" />
+    <file src="..\LabVIEWbuild\ZE_Easy.Sequencer.lvlibp" target="" />
+  </files>
+</package>

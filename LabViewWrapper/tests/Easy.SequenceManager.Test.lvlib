@@ -28,6 +28,7 @@
 			<Item Name="sub.json" Type="Document" URL="../Testfiles/sub.json"/>
 		</Item>
 		<Item Name="test_next_steps_class.vi" Type="VI" URL="../test_next_steps_class.vi"/>
+		<Item Name="test_next_steps_class_with_json_param.vi" Type="VI" URL="../test_next_steps_class_with_json_param.vi"/>
 		<Item Name="test_next_steps_json.vi" Type="VI" URL="../test_next_steps_json.vi"/>
 		<Item Name="test_open_close.vi" Type="VI" URL="../test_open_close.vi"/>
 	</Item>

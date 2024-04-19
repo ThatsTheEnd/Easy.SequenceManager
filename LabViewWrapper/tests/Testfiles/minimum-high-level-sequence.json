@@ -8,16 +8,16 @@
         {
           "Type": "Step", "Name": "Fill Box With Stuff", "IsSynchronous": true, "IsParallel": false, "Documentation": "Any documentation needed", "Timeout": 30, "TargetModule": "",
           "Parameters": [
-            {"Name": "pumpSpeed", "Type": "Integer","Value": "500","Required": true,"DefaultValue": "300","HooverOverInfo": "Pump speed in RPM"},
+            {"Name": "pumpSpeed", "Type": "Integer","Value": 500,"Required": true,"DefaultValue": 300,"HooverOverInfo": "Pump speed in RPM"},
             {"Name": "pumpMode","Type": "String","Value": "Auto","Required": false,"DefaultValue": "Manual","HooverOverInfo": "Pump operation mode"} ]
         },
         {
           "Type": "Step", "Name": "Compression", "IsSynchronous": false, "IsParallel": false, "Documentation": "Any documentation needed", "Timeout": 45, "TargetModule": "",
           "Parameters": [
-            {"Name": "axisTargetPosition1", "Type": "Float", "Value": "10.5", "Required": true, "DefaultValue": "0.0", "HooverOverInfo": "Target position for the axis movement" },
-            {"Name": "axisSpeed1", "Type": "Float", "Value": "10.5", "Required": true, "DefaultValue": "0.0", "HooverOverInfo": "Target position for the axis movement" },
-            {"Name": "axisTargetPosition2", "Type": "Float", "Value": "10.5", "Required": true, "DefaultValue": "0.0", "HooverOverInfo": "Target position for the axis movement"},
-            {"Name": "axisSpeed2", "Type": "Float", "Value": "10.5", "Required": true, "DefaultValue": "0.0", "HooverOverInfo": "Target position for the axis movement"} 
+            {"Name": "axisTargetPosition1", "Type": "Float", "Value": 10.5, "Required": true, "DefaultValue": 0.0, "HooverOverInfo": "Target position for the axis movement" },
+            {"Name": "axisSpeed1", "Type": "Float", "Value": 10.5, "Required": true, "DefaultValue": 0.0, "HooverOverInfo": "Target position for the axis movement" },
+            {"Name": "axisTargetPosition2", "Type": "Float", "Value": 10.5, "Required": true, "DefaultValue": 0.0, "HooverOverInfo": "Target position for the axis movement"},
+            {"Name": "axisSpeed2", "Type": "Float", "Value": 10.5, "Required": true, "DefaultValue": 0.0, "HooverOverInfo": "Target position for the axis movement"} 
           ]
         }
       ]

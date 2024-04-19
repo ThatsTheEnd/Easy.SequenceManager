@@ -204,5 +204,38 @@ namespace Easy.SequenceManager.Test
 
             // Additional assertions can be added based on specific requirements
         }
+
+        [Fact]
+        public void loadJSONsequenceWithStepThatContainsParamterAsJSONValue()
+        {
+			// Arrange
+			var sequenceManager = new SequenceManager();
+			string filePath = Path.Combine("Testfiles", "PumpAccelerationAndScalesTest.json");
+
+			// Act
+			sequenceManager.LoadJsonSequence(filePath);
+			sequenceManager.InitializeExecution();
+			string json = sequenceManager.GetNextStepsToExecuteAsJson();
+
+			// Assert
+			// Check if the JSON contains expected step details
+			var jArray = JArray.Parse(json);
+			foreach (var step in jArray)
+            {
+				Assert.NotNull(step);
+				Assert.True(step.HasValues);
+			}
+
+            // Assert first param of first step 
+            string expectedJSONString = "{\"SampleRate\":1000,\"SamplesPerLoop\":200}";
+			var firstStep = jArray[0];
+			var firstParam = firstStep["Parameters"][0];
+			Assert.Equal("JSON", firstParam["Type"].Value<string>());
+			string actualJSONString = firstParam["Value"].ToString(Newtonsoft.Json.Formatting.None);
+			Assert.Equal(expectedJSONString, actualJSONString);
+
+			// Additional assertions can be added based on specific requirements
+		}
+
     }
 }

@@ -48,6 +48,9 @@
     <None Update="Testfiles\minimum-high-level-sequence.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Testfiles\PumpAccelerationAndScalesTest.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Testfiles\sequence_with_subsequence.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
